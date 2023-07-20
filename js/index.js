@@ -12,6 +12,7 @@ const GameBoard = (() => {
   ].map(e => ({ ...e, symbol: "" }));
 
   const getBoard = () => gameboard;
+  const resetBoard = () => gameboard = gameboard.map(e => ({...e, symbol: ""}));
 
   const getSumMagic = (acc, e) => e.symbol === GameController.getActivePlayer().symbol ? acc + e.magic : acc;
 
@@ -48,15 +49,21 @@ const GameBoard = (() => {
     return { turn: true, won: false, over: false };
   }
 
-  return { getBoard, updateBoard };
+  return { getBoard, updateBoard, resetBoard };
 })();
 
-const Player = (symbol) => {
-  return { symbol };
+const Player = (symbol, ...name) => {
+  const cleanedName = name[0] ?? symbol;
+  return { symbol, name: cleanedName };
 }
 
 const GameController = (() => {
-  const players = [Player("X"), Player("O")];
+  let players = [Player("X"), Player("O")];
+
+  const setPlayersName = (name1, name2) => {
+    players[0].name = name1;
+    players[1].name = name2;
+  }
 
   let activePlayer = players[0];
   const switchTurn = () => activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -77,19 +84,23 @@ const GameController = (() => {
     switchTurn();
   }
 
-  return { getActivePlayer, playTurn };
+  return { getActivePlayer, playTurn, setPlayersName };
 })();
 
 const ScreenController = ((doc) => {
 
   const gameboardDiv = doc.querySelector(".gameboard");
-  const gameboard = GameBoard.getBoard();
   const turnDiv = doc.querySelector(".turn");
   const resultDiv = doc.querySelector(".result");
+  const formDiv = doc.querySelector("#form");
   let res = "";
 
   const displayBoard = () => {
-    turnDiv.innerHTML = `${GameController.getActivePlayer().symbol}'s turn.`;
+    const gameboard = GameBoard.getBoard();
+    formDiv.addEventListener("submit", submitHandler);
+
+    resultDiv.style.display = "none";
+    turnDiv.innerHTML = `${GameController.getActivePlayer().name}'s turn.`;
     turnDiv.style.display = "block";
 
     // Resets the board
@@ -110,8 +121,10 @@ const ScreenController = ((doc) => {
 
   const displayResult = () => {
     if (!res) return;
-    resultDiv.innerHTML = res === "Tie" ? "It's a Tie" : `${GameController.getActivePlayer().symbol} won.`;
+    resultDiv.innerHTML = res === "Tie" ? "It's a Tie" : `${GameController.getActivePlayer().name} won.`;
+    resultDiv.style.display = "block";
     turnDiv.style.display = "none";
+    res = "";
   }
 
   const clickHandler = (e) => {
@@ -121,6 +134,13 @@ const ScreenController = ((doc) => {
     displayResult();
   }
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    GameBoard.resetBoard();
+    const elements = e.target.elements;
+    GameController.setPlayersName(elements.player1.value ?? "", elements.player2.value ?? "");
+    displayBoard();
+  }
 
   return { displayBoard };
 

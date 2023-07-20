@@ -11,6 +11,10 @@ body {
   align-items: center;
 }
 
+form > input {
+  padding-block: 0.5em;
+}
+
 .result, .turn  {
   font-size: 2rem;
   font-weight: bold;
