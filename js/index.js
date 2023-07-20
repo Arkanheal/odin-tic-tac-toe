@@ -52,8 +52,8 @@ const GameBoard = (() => {
   return { getBoard, updateBoard, resetBoard };
 })();
 
-const Player = (symbol, ...name) => {
-  const cleanedName = name[0] ?? symbol;
+const Player = (symbol, name) => {
+  const cleanedName = name ?? symbol;
   return { symbol, name: cleanedName };
 }
 
@@ -61,8 +61,8 @@ const GameController = (() => {
   let players = [Player("X"), Player("O")];
 
   const setPlayersName = (name1, name2) => {
-    players[0].name = name1;
-    players[1].name = name2;
+    players[0].name = name1 !== "" ? name1 : "X";
+    players[1].name = name2 !== "" ? name2 : "O";
   }
 
   let activePlayer = players[0];
@@ -100,7 +100,8 @@ const ScreenController = ((doc) => {
     formDiv.addEventListener("submit", submitHandler);
 
     resultDiv.style.display = "none";
-    turnDiv.innerHTML = `${GameController.getActivePlayer().name}'s turn.`;
+    const player = GameController.getActivePlayer();
+    turnDiv.innerHTML = `Player ${player.symbol === "X" ? 1 : 2} (${player.name})'s turn.`;
     turnDiv.style.display = "block";
 
     // Resets the board
@@ -138,7 +139,8 @@ const ScreenController = ((doc) => {
     e.preventDefault();
     GameBoard.resetBoard();
     const elements = e.target.elements;
-    GameController.setPlayersName(elements.player1.value ?? "", elements.player2.value ?? "");
+    GameController.setPlayersName(elements.player1.value, elements.player2.value);
+    e.target.reset();
     displayBoard();
   }
 
