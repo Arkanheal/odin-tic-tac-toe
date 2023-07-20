@@ -11,6 +11,30 @@ body {
   align-items: center;
 }
 
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+  gap: .5em;
+}
+
+form > button {
+  grid-column: span 2;
+  width: 50%;
+  align-self: center;
+  justify-self: center;
+
+  padding-inline: .8em;
+  padding-block: .4em;
+
+  background-color: white;
+  border: 1px solid #555;
+  border-radius: .8em;
+  font-size: clamp(1rem, 1vw, 2.5rem);;
+
+}
+
 form > input {
   padding-block: 0.5em;
 }
