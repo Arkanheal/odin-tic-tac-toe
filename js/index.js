@@ -84,9 +84,14 @@ const ScreenController = ((doc) => {
 
   const gameboardDiv = doc.querySelector(".gameboard");
   const gameboard = GameBoard.getBoard();
+  const turnDiv = doc.querySelector(".turn");
+  const resultDiv = doc.querySelector(".result");
   let res = "";
 
   const displayBoard = () => {
+    turnDiv.innerHTML = `${GameController.getActivePlayer().symbol}'s turn.`;
+    turnDiv.style.display = "block";
+
     // Resets the board
     gameboardDiv.innerHTML = "";
 
@@ -105,8 +110,8 @@ const ScreenController = ((doc) => {
 
   const displayResult = () => {
     if (!res) return;
-    const resultDiv = doc.querySelector(".result");
     resultDiv.innerHTML = res === "Tie" ? "It's a Tie" : `${GameController.getActivePlayer().symbol} won.`;
+    turnDiv.style.display = "none";
   }
 
   const clickHandler = (e) => {

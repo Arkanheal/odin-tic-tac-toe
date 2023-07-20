@@ -11,7 +11,7 @@ body {
   align-items: center;
 }
 
-.result {
+.result, .turn  {
   font-size: 2rem;
   font-weight: bold;
 }
